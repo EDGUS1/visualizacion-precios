@@ -1,12 +1,13 @@
 import styles from './App.module.css';
 import { createEffect, createSignal, onMount } from 'solid-js';
 
-import { Chart, registerables } from 'chart.js';
-Chart.register(...registerables);
 import protobuf from 'protobufjs';
 import { Buffer } from 'buffer/';
 
-import Grafico from './Grafico';
+import Grafico from './components/Grafico';
+
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 function App() {
   const [selectedValue, setSelectedValue] = createSignal('ETH-USD');
@@ -38,7 +39,8 @@ function App() {
 
   const loadData = valorMoneda => {
     const ws = new WebSocket('wss://streamer.finance.yahoo.com');
-    protobuf.load('./YPricingData.proto', (err, root) => {
+
+    protobuf.load('./src/assets/YPricingData.proto', (err, root) => {
       if (err) console.log(err);
 
       const Yaticker = root.lookupType('yaticker');
@@ -52,7 +54,7 @@ function App() {
       };
 
       ws.onclose = function close() {
-        // console.log('disconnected');
+        console.log('disconnected');
       };
 
       ws.onmessage = function incoming(datares) {
